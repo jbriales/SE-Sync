@@ -199,6 +199,11 @@ public:
   void EucHessianEta(ROPTLIB::Variable *x, ROPTLIB::Vector *v,
                      ROPTLIB::Vector *Hv) const;
 
+  /** Evaluates the action of the Preconditioner for the Hessian of the
+   * function */
+  void PreConditioner(ROPTLIB::Variable* x, ROPTLIB::Vector* eta,
+                      ROPTLIB::Vector* result) const;
+
   ~SESyncProblem() {
     if (Stdr)
       delete Stdr;
