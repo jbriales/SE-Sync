@@ -51,7 +51,7 @@ void SESyncProblem::set_problem_data(
   }
 
   /** Compute and cache preconditioning matrices, if required */
-  if (preconditioner == Jacobi) {
+  if (preconditioner == Preconditioner::Jacobi) {
     Eigen::VectorXd diag = LGrho.diagonal();
     JacobiPreconditioner = diag.cwiseInverse().asDiagonal();
   } else if (preconditioner == Preconditioner::IncompleteCholesky)

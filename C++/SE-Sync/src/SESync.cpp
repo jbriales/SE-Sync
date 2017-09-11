@@ -24,7 +24,7 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
                            // equations (69) of the tech report
 
   SESyncResult results;
-  results.status = RS_ITER_LIMIT;
+  results.status = SESyncStatus::RS_ITER_LIMIT;
 
   // Define stopwatch objects to measure performance of the algorithm
   util::stopwatch_collection sw_collection; // all the stopwatches to define
@@ -70,9 +70,9 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
               << options.max_tCG_iterations << std::endl;
     std::cout
         << " Preconditioning the truncated conjugate gradient method using ";
-    if (options.precon == None)
+    if (options.precon == Preconditioner::None)
       std::cout << "the identity preconditioner";
-    else if (options.precon == Jacobi)
+    else if (options.precon == Preconditioner::Jacobi)
       std::cout << "Jacobi preconditioning";
     else
       std::cout << "incomplete Cholesky preconditioning";
@@ -306,7 +306,7 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
       std::cout << "WARNING!  EIGENVALUE COMPUTATION DID NOT CONVERGE TO "
                    "DESIRED PRECISION!"
                 << std::endl;
-      results.status = EIG_IMPRECISION;
+      results.status = SESyncStatus::EIG_IMPRECISION;
       break;
     }
 
@@ -318,7 +318,7 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
                   << results.lambda_min
                   << "). Elapsed computation time: " << eig_elapsed_time
                   << " seconds" << std::endl;
-      results.status = GLOBAL_OPT;
+      results.status = SESyncStatus::GLOBAL_OPT;
       break;
     } else {
 
@@ -408,7 +408,7 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
         std::cout << "WARNING!  BACKTRACKING LINE SEARCH FAILED TO ESCAPE FROM "
                      "SADDLE POINT!"
                   << std::endl;
-        results.status = SADDLE_POINT;
+        results.status = SESyncStatus::SADDLE_POINT;
         break;
       }
     } // if (saddle point)
@@ -424,19 +424,19 @@ SESyncResult SESync(const std::vector<RelativePoseMeasurement> &measurements,
               << std::endl;
 
     switch (results.status) {
-    case GLOBAL_OPT:
+    case SESyncStatus::GLOBAL_OPT:
       std::cout << "Found global optimum!" << std::endl;
       break;
-    case EIG_IMPRECISION:
+    case SESyncStatus::EIG_IMPRECISION:
       std::cout << "WARNING: Minimum eigenvalue computation did not achieve "
                    "sufficient accuracy; solution may not be globally optimal!"
                 << std::endl;
       break;
-    case SADDLE_POINT:
+    case SESyncStatus::SADDLE_POINT:
       std::cout << "WARNING: Line-search was unable to escape saddle point!"
                 << std::endl;
       break;
-    case RS_ITER_LIMIT:
+    case SESyncStatus::RS_ITER_LIMIT:
       std::cout << "WARNING:  Riemannian Staircase reached the maximum level "
                    "before finding global optimum!"
                 << std::endl;

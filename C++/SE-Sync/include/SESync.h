@@ -89,7 +89,7 @@ struct SESyncOpts {
              double eigenvalue_nonnegativity_numerical_tolerance = 1e-5,
              unsigned int num_vectors = 20, bool chordal_initialization = true,
              bool Cholesky = true,
-             const Preconditioner &preconditioner = IncompleteCholesky,
+             const Preconditioner &preconditioner = Preconditioner::IncompleteCholesky,
              bool verbose_output = false)
       : grad_norm_tol(gradient_norm_tolerance),
         rel_func_decrease_tol(relative_function_decrease_tolerance),
@@ -106,7 +106,7 @@ struct SESyncOpts {
 
 /** These enumerations describe the termination status of the SE-Sync algorithm
  */
-enum SESyncStatus {
+enum class SESyncStatus {
   /** The algorithm converged to a certified global optimum */
   GLOBAL_OPT,
 

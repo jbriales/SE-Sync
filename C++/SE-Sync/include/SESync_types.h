@@ -18,7 +18,7 @@ typedef Eigen::SparseMatrix<double, Eigen::RowMajor> SparseMatrix;
 
 /** The set of available preconditioning strategies to use in the Riemannian
  * Trust Regionn when solving this problem */
-enum Preconditioner { None, Jacobi, IncompleteCholesky };
+enum class Preconditioner { None, Jacobi, IncompleteCholesky };
 
 } // namespace SESync
 

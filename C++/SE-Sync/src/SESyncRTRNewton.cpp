@@ -29,7 +29,7 @@ bool SESyncRTRNewton::IsStopped() {
 
 void SESyncRTRNewton::PreConditioner(ROPTLIB::Variable *x, ROPTLIB::Vector *eta,
                                      ROPTLIB::Vector *result) {
-  if (problem->preconditioner == None) {
+  if (problem->preconditioner == Preconditioner::None) {
     // Identity preconditioning; this is simply a passthrough
     eta->CopyTo(result);
   } else {
@@ -37,7 +37,7 @@ void SESyncRTRNewton::PreConditioner(ROPTLIB::Variable *x, ROPTLIB::Vector *eta,
     Matrix preconditioned_eta_mat;
     StiefelProd2Mat(*static_cast<ROPTLIB::ProductElement *>(eta), eta_mat);
 
-    if (problem->preconditioner == Jacobi) {
+    if (problem->preconditioner == Preconditioner::Jacobi) {
       // Apply Jacobi preconditioning
       preconditioned_eta_mat = eta_mat * problem->JacobiPreconditioner;
     } else {

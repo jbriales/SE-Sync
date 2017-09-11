@@ -130,7 +130,7 @@ public:
                 const SparseMatrix &translational_data_matrix,
                 const DiagonalMatrix &translational_precisions_matrix,
                 bool Cholesky = true,
-                const Preconditioner &precon = IncompleteCholesky) {
+                const Preconditioner &precon = Preconditioner::IncompleteCholesky) {
     // This is just a passthrough to the initialization function
     set_problem_data(rotational_connection_Laplacian, oriented_incidence_matrix,
                      translational_data_matrix, translational_precisions_matrix,
@@ -144,7 +144,7 @@ public:
                         const SparseMatrix &translational_data_matrix,
                         const DiagonalMatrix &translational_precisions_matrix,
                         bool Cholesky = true,
-                        const Preconditioner &precon = IncompleteCholesky);
+                        const Preconditioner &precon = Preconditioner::IncompleteCholesky);
 
   /** Set the maximum rank of the rank-restricted semidefinite relaxation */
   void set_relaxation_rank(unsigned int rank);
