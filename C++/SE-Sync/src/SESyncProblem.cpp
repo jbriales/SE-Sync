@@ -224,4 +224,47 @@ void SESyncProblem::EucHessianEta(ROPTLIB::Variable *x, ROPTLIB::Vector *v,
   StiefelProd2Mat(*V, *Y);
   Mat2StiefelProd(2 * Q_product(Y->transpose()).transpose(), *HV);
 }
+
+void SESyncProblem::PreConditioner(ROPTLIB::Variable *x, ROPTLIB::Vector *eta,
+                                   ROPTLIB::Vector *result) const {
+  if (preconditioner == Preconditioner::None) {
+    // Identity preconditioning; this is simply a passthrough
+    eta->CopyTo(result);
+  } else {
+
+    /// Preallocated storage/working space for performing preconditioning
+    /// operations
+    Matrix eta_mat;
+    ROPTLIB::ProductElement *preconditioned_eta;
+
+    // Allocate working space for preconditioning computations
+    eta_mat.resize(r,d*n);
+
+    ROPTLIB::StieVariable St(r, d);
+    preconditioned_eta =
+        new ROPTLIB::ProductElement(1, &St, n);
+
+    // Convert the passed tangent vector to an Eigen matrix
+    Matrix preconditioned_eta_mat;
+    StiefelProd2Mat(*static_cast<ROPTLIB::ProductElement *>(eta), eta_mat);
+
+    if (preconditioner == Preconditioner::Jacobi) {
+      // Apply Jacobi preconditioning
+      preconditioned_eta_mat = eta_mat * JacobiPreconditioner;
+    } else {
+      // Incomplete Cholesky preconditioning
+      preconditioned_eta_mat = iChol->solve(eta_mat.transpose()).transpose();
+    }
+
+    // Convert back to a ProductElement
+    Mat2StiefelProd(preconditioned_eta_mat, *preconditioned_eta);
+
+    // Reproject this onto the tangent space at x
+    domain->Projection(x, preconditioned_eta, result);
+
+    // Delete the auxiliary allocated space
+    delete preconditioned_eta;
+  } // else (preconditioner == None)
 }
+
+} // namespace SESync
